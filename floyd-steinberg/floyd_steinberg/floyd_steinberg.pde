@@ -4,11 +4,13 @@
 // Creator: Fi Graham
 
 // Enviroment Variables
+boolean export = false;
+String savePath = "floyd-steinburg-export.png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
 int border = 200;
-int downSampleFactor = 2; // must be 1 or 2^something
+int downSampleFactor = 4; // must be 1 or 2^something
 
 // Color Variables
 color primaryColor;
@@ -27,6 +29,9 @@ void setup() {
   processImage();
   drawToMain();
   image(main, 0, 0, width, height);
+  if (export) {
+    main.save(savePath);
+  }
 }
 
 // sets up main graphics and size
