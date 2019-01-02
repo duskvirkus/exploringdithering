@@ -1,26 +1,42 @@
 // Exploration of Dithering
 // Project 1
-// Title: Floyd Steinberg
+// Title: Floyd-Steinberg
 // Creator: Fi Graham
 
-// Graphics Variables
+// Enviroment Variables
 PGraphics main; // main graphics for exporting at differt size than working
-int size = 1080; // final export size
+int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
+int border = 200;
+int downSampleFactor = 2; // must be 1 or 2^something
 
 // Color Variables
 color primaryColor;
 color secondaryColor;
 
+// Image
+PImage img;
+String imagePath = "Filigree.png";
+
 // Setup Function
-void setup() {
-  // square format is assumed
-  // would be size(size / scale, size / scale) if size accepted varibles
+void setup() {  
   size(540, 540);
-  main = createGraphics(size, size);
+  setupEnviroment();
   setupColors();
+  setupImage();
+  processImage();
+  drawToMain();
+  image(main, 0, 0, width, height);
 }
 
+// sets up main graphics and size
+void setupEnviroment() {
+  // square format is assumed
+  // create main graphics before border changes size variable
+  main = createGraphics(size, size);
+  // account for border in size
+  size = size - border * 2;
+}
 
 // Sets up Color Varaibles
 void setupColors() {
@@ -28,16 +44,136 @@ void setupColors() {
   secondaryColor = color(0, 0, 170);
 }
 
-// Draw Function
-void draw() {
-  drawMain();
-  image(main, 0, 0, width, height);
+// loads image and does some pre processing
+void setupImage() {
+  img = loadImage(imagePath);
+  // pre processing image
+  img.resize(size/downSampleFactor, size/downSampleFactor);
+  img.filter(GRAY);
 }
 
-// Handles drawing everything in main graphics
-void drawMain() {
+// Handles image processing
+void processImage() {
+  floydSteinberg(img, 1);
+  changeColor(
+    img,
+    new ColorPair(color(255), primaryColor),
+    new ColorPair(color(0), secondaryColor)
+  );
+  img = upSampleImage(img, downSampleFactor);
+}
+
+// Handles drawing image in main graphics
+void drawToMain() {
   main.beginDraw();
   main.background(secondaryColor);
-  
+  main.image(img, border, border);
   main.endDraw();
+}
+
+// will replace first color in ColorPair with second color in ColorPair
+void changeColor(PImage img, ColorPair... pairs) {
+  img.loadPixels();
+  for (int i = 0; i < img.pixels.length; i++) {
+    for (ColorPair pair : pairs) {
+      if (img.pixels[i] == pair.first) {
+        img.pixels[i] = pair.second;
+      }
+    }
+  }
+  img.updatePixels();
+}
+
+// scales an image up directly, nothing fancy
+PImage upSampleImage(PImage in, int factor) {
+  in.loadPixels();
+  PImage out = createImage(in.width * factor, in.height * factor, ARGB);
+  out.loadPixels();
+  for (int x = 0; x < out.width; x++) {
+    for (int y = 0; y < out.height; y++) {
+      int indexIn = x/factor + y/factor * in.width;
+      int indexOut = x + y * out.width;
+      out.pixels[indexOut] = in.pixels[indexIn];
+    }
+  }
+  out.updatePixels();
+  return out;
+}
+
+// simple function to calculate index of 2d data in one 1d array
+int index(int x, int y, int w) {
+  return x + y * w;
+}
+
+// implyments floyd-steinberg dithering alogrithim
+void floydSteinberg(PImage img, int factor) {
+  img.loadPixels();
+  for (int y = 0; y < img.height; y++) {
+    for (int x = 0; x < img.width; x++) {
+      color input = img.pixels[index(x, y, img.width)];
+      color closest = closestColor(input, factor);
+      img.pixels[index(x, y, img.width)] = closest;
+      Error error = calculateError(input, closest);
+      distributeError(img, error, index(x + 1, y    , img.width), 7 / 16.0);
+      distributeError(img, error, index(x - 1, y + 1, img.width), 3 / 16.0);
+      distributeError(img, error, index(x    , y + 1, img.width), 5 / 16.0);
+      distributeError(img, error, index(x + 1, y + 1, img.width), 1 / 16.0);
+    }
+  }
+  img.updatePixels();
+}
+
+// will quantize a color
+color closestColor(color input, int factor) {
+  return (
+    color(
+      closestColorHelper(red(input)  , factor), 
+      closestColorHelper(green(input), factor), 
+      closestColorHelper(blue(input) , factor)
+    )
+  );
+}
+
+// helps closestColor function
+int closestColorHelper(float input, int factor) {
+  return round(factor * input / 255) * (255 / factor);
+}
+
+// calculates error given two colors
+Error calculateError(color input, color closest) {
+  return (
+    new Error(
+      red(input)   - red(closest)  ,
+      green(input) - green(closest),
+      blue(input)  - blue(closest) 
+    )
+  );
+}
+
+// distributes error to pixel at specified index
+void distributeError(PImage img, Error error, int index, float amount) {
+  if (insideImage(img, index)) {
+    color current = img.pixels[index];
+    Error scaledError = new Error(error, amount);
+    img.pixels[index] = addError(current, scaledError);
+  }
+}
+
+// checks if index is inside image pixels array
+boolean insideImage(PImage img, int index) {
+  if (index >= 0 && index < img.width * img.height) {
+    return true;
+  }
+  return false;
+}
+
+// adds error to a color
+color addError(color c, Error error) {
+  return (
+    color(
+      red(c)   + error.r,
+      green(c) + error.g,
+      blue(c)  + error.b
+    )
+  );
 }
