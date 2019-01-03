@@ -5,7 +5,7 @@
 
 // Enviroment Variables
 boolean export = false;
-String savePath = "floyd-steinburg-export.png";
+String savePath = "floyd-steinburg-cctv.png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
@@ -18,7 +18,7 @@ color secondaryColor;
 
 // Image
 PImage img;
-String imagePath = "Filigree.png";
+String imagePath = "CCTV.png";
 
 // Setup Function
 void setup() {  
