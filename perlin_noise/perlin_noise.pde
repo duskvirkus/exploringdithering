@@ -4,7 +4,7 @@
 // Creator: Fi Graham
 
 // Enviroment Variables
-boolean export = true;
+boolean export = false;
 String savePath = "perlin-noise-walmart.png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
@@ -110,7 +110,7 @@ int index(int x, int y, int w) {
   return x + y * w;
 }
 
-// 
+// works like a random dither but uses perlin noise based off pixel index
 void perlinNoiseDither(PImage img) {
   img.loadPixels();
   for (int y = 0; y < img.height; y++) {
