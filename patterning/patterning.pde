@@ -5,7 +5,7 @@
 
 // Enviroment Variables
 boolean export = false;
-String savePath = "floyd-steinburg-cctv.png";
+String savePath = "patterning-test.png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
@@ -18,7 +18,7 @@ color secondaryColor;
 
 // Image
 PImage img;
-String imagePath = "CCTV.png";
+String imagePath = "test.jpg";
 
 // Setup Function
 void setup() {  
@@ -59,7 +59,7 @@ void setupImage() {
 
 // Handles image processing
 void processImage() {
-  patterningDither(img, color(0));
+  patterningDither(img, 3, color(0));
   changeColor(
     img,
     new ColorPair(color(255), primaryColor),
@@ -110,11 +110,11 @@ int index(int x, int y, int w) {
   return x + y * w;
 }
 
-void patterningDither(PImage img, color borderColor) {
-  int scale = 3; // TODO improve so this can be changed
+void patterningDither(PImage img, int scale, color borderColor) {
   img.loadPixels();
   PImage scaled = scaleDown(img, scale);
   scaled.loadPixels();
+  //ArrayList<ColorMatrix> matrixes = generateColorMatrixes(scale);
   ArrayList<ColorMatrix> matrixes = getColorMatrixes();
   for (int y = 0; y < scaled.height; y++) {
     for (int x = 0; x < scaled.width; x++) {
@@ -194,7 +194,61 @@ ArrayList<ColorMatrix> getColorMatrixes() {
   return matrixes;
 }
 
+ArrayList<ColorMatrix> generateColorMatrixes(int size) {
+  ArrayList<ColorMatrix> matrixes = new ArrayList<ColorMatrix>();
+  color w = color(255);
+  color b = color(0);
+  color[] colors = new color[size * size];
+  for (int i = 0; i < colors.length; i++) {
+    colors[i] = w; // start with all white pixels;
+  }
+  matrixes.add(new ColorMatrix(colors.clone())); // all white matrix
+  int[] indexes = getIndexes(size);
+  for (int i = 0; i < indexes.length; i++) {
+    colors[indexes[i]] = b;
+    matrixes.add(new ColorMatrix(colors.clone()));
+  }
+  return matrixes;
+}
+
+int[] getIndexes(int size) {
+  int[] indexes = new int[size * size];
+  int i = 0;
+  int currentSize = 1;
+  while (currentSize <= size) {
+    for (int y = 0; y < currentSize - 1; y++) {
+      indexes[i] = index(currentSize - 1, y, size);
+      i++;
+    }
+    for (int x = 0; x < currentSize; x++) {
+      indexes[i] = index(x, currentSize - 1, size);
+      i++;
+    }
+    currentSize++;
+  }
+  return indexes;
+}
+
+//ColorMatrix generateColorMatrix(int size, int stage) {
+//  assert stage <= size * size;
+//  color b = color(0);
+//  color w = color(255);
+//  color[] colors = new color[size * size];
+//  //int layer = 0;
+//  int remaining = stage;
+//  int[] checkIndexs = getCheckIndexes();
+//  for (int i = 0; i < colors.length; i++) {
+//    if (colors[i] != b) {
+//      colors[i] = w;
+//    }
+//  }
+//  return new ColorMatrix(colors);
+//}
+
 int closestMatrix(float input, int numberOfMatrixes) {
-  float step = 255 / numberOfMatrixes;
-  return int(input/step);
+  float step = 255 / float(numberOfMatrixes);
+  println(step);
+  println(int(input/step));
+  println(numberOfMatrixes);
+  return numberOfMatrixes - 1 - int(input/step);
 }
