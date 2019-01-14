@@ -5,7 +5,7 @@
 
 // Enviroment Variables
 boolean export = false;
-String savePath = "patterning-test.png";
+String savePath = "patterning-chair.png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
@@ -18,7 +18,7 @@ color secondaryColor;
 
 // Image
 PImage img;
-String imagePath = "test.jpg";
+String imagePath = "chair.png";
 
 // Setup Function
 void setup() {  
@@ -110,23 +110,25 @@ int index(int x, int y, int w) {
   return x + y * w;
 }
 
+// applies patterning dither
 void patterningDither(PImage img, int scale, color borderColor) {
   img.loadPixels();
   PImage scaled = scaleDown(img, scale);
   scaled.loadPixels();
-  //ArrayList<ColorMatrix> matrixes = generateColorMatrixes(scale);
-  ArrayList<ColorMatrix> matrixes = getColorMatrixes();
+  ArrayList<ColorMatrix> matrixes = generateColorMatrixes(scale);
   for (int y = 0; y < scaled.height; y++) {
     for (int x = 0; x < scaled.width; x++) {
       float brightness = brightness(scaled.pixels[index(x, y, scaled.width)]);
       int closest = closestMatrix(brightness, matrixes.size());
       for (int j = 0; j < scale; j++) {
         for (int i = 0; i < scale; i++) {
-          img.pixels[index(x * scale + i, y * scale + j, img.width)] = matrixes.get(closest).get(i, j);
+          img.pixels[index(x * scale + i, y * scale + j, img.width)] = 
+          matrixes.get(closest).get(i, j);
         }
       }
     }
   }
+  // removes unused pixels
   for (int y = scaled.height * scale; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       img.pixels[index(x, y, img.width)] = borderColor;
@@ -140,60 +142,14 @@ void patterningDither(PImage img, int scale, color borderColor) {
   img.updatePixels();
 }
 
+// returns a smaller copy of the image
 PImage scaleDown(PImage img, int factor) {
   PImage output = img.copy();
   output.resize(img.width/factor, img.height/factor);
   return output;
 }
 
-// TODO improve with generating matrix using an alogrithm
-ArrayList<ColorMatrix> getColorMatrixes() {
-  ArrayList<ColorMatrix> matrixes = new ArrayList<ColorMatrix>();
-  color b = color(0);
-  color w = color(255);
-  matrixes.add(new ColorMatrix(new color[]
-  {b,b,b,
-   b,b,b,
-   b,b,b}));
-  matrixes.add(new ColorMatrix(new color[]
-  {b,b,b,
-   b,b,b,
-   b,b,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,b,b,
-   b,b,b,
-   b,b,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,b,b,
-   b,b,b,
-   w,b,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,b,b,
-   w,b,b,
-   w,b,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,b,b,
-   w,b,b,
-   w,w,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,b,w,
-   w,b,b,
-   w,w,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,w,w,
-   w,b,b,
-   w,w,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,w,w,
-   w,b,w,
-   w,w,w}));
-  matrixes.add(new ColorMatrix(new color[]
-  {w,w,w,
-   w,w,w,
-   w,w,w}));
-  return matrixes;
-}
-
+// creates color matrixes for patterning
 ArrayList<ColorMatrix> generateColorMatrixes(int size) {
   ArrayList<ColorMatrix> matrixes = new ArrayList<ColorMatrix>();
   color w = color(255);
@@ -211,6 +167,7 @@ ArrayList<ColorMatrix> generateColorMatrixes(int size) {
   return matrixes;
 }
 
+// returns indexes in order of growing from the top left corner in L shape
 int[] getIndexes(int size) {
   int[] indexes = new int[size * size];
   int i = 0;
@@ -229,26 +186,7 @@ int[] getIndexes(int size) {
   return indexes;
 }
 
-//ColorMatrix generateColorMatrix(int size, int stage) {
-//  assert stage <= size * size;
-//  color b = color(0);
-//  color w = color(255);
-//  color[] colors = new color[size * size];
-//  //int layer = 0;
-//  int remaining = stage;
-//  int[] checkIndexs = getCheckIndexes();
-//  for (int i = 0; i < colors.length; i++) {
-//    if (colors[i] != b) {
-//      colors[i] = w;
-//    }
-//  }
-//  return new ColorMatrix(colors);
-//}
-
+// helper to find cloest matrix given a color input
 int closestMatrix(float input, int numberOfMatrixes) {
-  float step = 255 / float(numberOfMatrixes);
-  println(step);
-  println(int(input/step));
-  println(numberOfMatrixes);
-  return numberOfMatrixes - 1 - int(input/step);
+  return int(map(input, 0, 255, 0, numberOfMatrixes -1));
 }
