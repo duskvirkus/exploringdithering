@@ -111,5 +111,13 @@ int index(int x, int y, int w) {
 }
 
 void particleDither(PImage img) {
-  
+  img.loadPixels();
+  for (int y = 0; y < img.height; y++) {
+    for (int x = 0; x < img.width; x++) {
+      color c = color(round(brightness(img.pixels[index(x, y, img.width)])/255) * 255);
+      Particle p = new Particle(new PVector(x, y), c);
+      p.display(img);
+    }
+  }
+  img.updatePixels();
 }
