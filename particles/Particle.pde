@@ -5,6 +5,7 @@ class Particle {
   PVector acceleration;
 
   color c; // color
+  float mass;
 
   Particle(PVector location, color c) {
     this.location = new PVector(location.x, location.y);
@@ -12,11 +13,13 @@ class Particle {
 
     velocity = new PVector();
     acceleration = new PVector();
+    mass = 1;
   }
 
   void update() {
     velocity.add(acceleration);
     location.add(velocity);
+    acceleration.mult(0);
   }
 
   // assumes loadPixels and updatePixels is done outside of display()
@@ -28,5 +31,11 @@ class Particle {
     } else {
       println("WARN: Particle location was outside of the range of pixels within image");
     }
+  }
+  
+  void applyForce(PVector force) {
+    PVector f = new PVector(force.x, force.y);
+    f.div(mass);
+    acceleration.add(f);
   }
 }

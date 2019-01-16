@@ -17,8 +17,12 @@ color primaryColor;
 color secondaryColor;
 
 // Image
+PImage original;
 PImage img;
 String imagePath = "CCTV.png";
+
+// Particles
+ParticleSystem particleSystem;
 
 // Setup Function
 void setup() {  
@@ -26,7 +30,8 @@ void setup() {
   setupEnviroment();
   setupColors();
   setupImage();
-  processImage();
+  errorForceParticles();
+  showParticles();
   drawToMain();
   image(main, 0, 0, width, height);
   if (export) {
@@ -51,15 +56,21 @@ void setupColors() {
 
 // loads image and does some pre processing
 void setupImage() {
-  img = loadImage(imagePath);
+  original = loadImage(imagePath);
   // pre processing image
-  img.resize(size/downSampleFactor, size/downSampleFactor);
-  img.filter(GRAY);
+  original.resize(size/downSampleFactor, size/downSampleFactor);
+  original.filter(GRAY);
+  img = original.get();
+  particleSystem = createParticles(img);
+}
+
+void errorForceParticles() {
+  
 }
 
 // Handles image processing
-void processImage() {
-  particleDither(img);
+void showParticles() {
+  particleSystem.display(img);
   changeColor(
     img,
     new ColorPair(color(255), primaryColor),
@@ -110,14 +121,20 @@ int index(int x, int y, int w) {
   return x + y * w;
 }
 
-void particleDither(PImage img) {
+ParticleSystem createParticles(PImage img) {
   img.loadPixels();
+  ParticleSystem particleSystem = new ParticleSystem();
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
-      color c = color(round(brightness(img.pixels[index(x, y, img.width)])/255) * 255);
-      Particle p = new Particle(new PVector(x, y), c);
-      p.display(img);
+      float input = brightness(img.pixels[index(x, y, img.width)]);
+      color closest = closestColor(input);
+      Particle p = new Particle(new PVector(x, y), closest);
+      particleSystem.particles.add(p);
     }
   }
-  img.updatePixels();
+  return particleSystem;
+}
+
+color closestColor(float input) {
+  return color(round(input / 255) * 255);
 }
