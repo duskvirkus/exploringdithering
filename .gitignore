@@ -1,2 +1,5 @@
 #git ignore
 local
+
+#export folders that are too large
+particles/export

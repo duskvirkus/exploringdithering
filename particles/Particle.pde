@@ -25,11 +25,8 @@ class Particle {
   // assumes loadPixels and updatePixels is done outside of display()
   // for better performance
   void display(PImage img) {
-    int locationIndex = int(location.x + location.y * img.width);
-    if (locationIndex >= 0 && locationIndex < img.pixels.length) {
-      img.pixels[locationIndex] = c;
-    } else {
-      println("WARN: Particle location was outside of the range of pixels within image");
+    if (currentIndex() >= 0 && currentIndex() < img.pixels.length) { // check index
+      img.pixels[currentIndex()] = c;
     }
   }
   
@@ -38,4 +35,9 @@ class Particle {
     f.div(mass);
     acceleration.add(f);
   }
+  
+  int currentIndex() {
+    return int(location.x + location.y * img.width);
+  }
+  
 }

@@ -4,8 +4,10 @@
 // Creator: Fi Graham
 
 // Enviroment Variables
-boolean export = false;
-String savePath = "particles-cctv.png";
+boolean export = true;
+String saveName = "export/particles-cctv";
+int saveCount = 0;
+String saveType = ".png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
@@ -19,6 +21,7 @@ color secondaryColor;
 // Image
 PImage original;
 PImage img;
+PImage changed;
 String imagePath = "CCTV.png";
 
 // Particles
@@ -30,12 +33,17 @@ void setup() {
   setupEnviroment();
   setupColors();
   setupImage();
-  errorForceParticles();
+}
+
+void draw() {
+  particleSystem.update();
+  particleSystem.applyErrorForces(original, img);
   showParticles();
   drawToMain();
   image(main, 0, 0, width, height);
   if (export) {
-    main.save(savePath);
+    main.save(saveName + saveCount + saveType);
+    saveCount++;
   }
 }
 
@@ -61,43 +69,42 @@ void setupImage() {
   original.resize(size/downSampleFactor, size/downSampleFactor);
   original.filter(GRAY);
   img = original.get();
-  particleSystem = createParticles(img);
-}
-
-void errorForceParticles() {
-  
+  particleSystem = new ParticleSystem(img);
 }
 
 // Handles image processing
 void showParticles() {
   particleSystem.display(img);
-  changeColor(
+  changed = changeColor(
     img,
     new ColorPair(color(255), primaryColor),
     new ColorPair(color(0), secondaryColor)
   );
-  img = upSampleImage(img, downSampleFactor);
+  changed = upSampleImage(changed, downSampleFactor);
 }
 
 // Handles drawing image in main graphics
 void drawToMain() {
   main.beginDraw();
   main.background(secondaryColor);
-  main.image(img, border, border);
+  main.image(changed, border, border);
   main.endDraw();
 }
 
-// will replace first color in ColorPair with second color in ColorPair
-void changeColor(PImage img, ColorPair... pairs) {
+// will replace first color in ColorPair with second color in ColorPair in new Image
+PImage changeColor(PImage img, ColorPair... pairs) {
+  PImage changed = img.get();
   img.loadPixels();
+  changed.loadPixels();
   for (int i = 0; i < img.pixels.length; i++) {
     for (ColorPair pair : pairs) {
       if (img.pixels[i] == pair.first) {
-        img.pixels[i] = pair.second;
+        changed.pixels[i] = pair.second;
       }
     }
   }
-  img.updatePixels();
+  changed.updatePixels();
+  return changed;
 }
 
 // scales an image up directly, nothing fancy
@@ -119,20 +126,6 @@ PImage upSampleImage(PImage in, int factor) {
 // simple function to calculate index of 2d data in one 1d array
 int index(int x, int y, int w) {
   return x + y * w;
-}
-
-ParticleSystem createParticles(PImage img) {
-  img.loadPixels();
-  ParticleSystem particleSystem = new ParticleSystem();
-  for (int y = 0; y < img.height; y++) {
-    for (int x = 0; x < img.width; x++) {
-      float input = brightness(img.pixels[index(x, y, img.width)]);
-      color closest = closestColor(input);
-      Particle p = new Particle(new PVector(x, y), closest);
-      particleSystem.particles.add(p);
-    }
-  }
-  return particleSystem;
 }
 
 color closestColor(float input) {
