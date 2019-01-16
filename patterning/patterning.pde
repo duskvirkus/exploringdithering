@@ -5,7 +5,7 @@
 
 // Enviroment Variables
 boolean export = false;
-String savePath = "patterning-chair.png";
+String savePath = "patterning-lamp.png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
@@ -18,7 +18,7 @@ color secondaryColor;
 
 // Image
 PImage img;
-String imagePath = "chair.png";
+String imagePath = "lamp.png";
 
 // Setup Function
 void setup() {  
@@ -188,5 +188,5 @@ int[] getIndexes(int size) {
 
 // helper to find cloest matrix given a color input
 int closestMatrix(float input, int numberOfMatrixes) {
-  return int(map(input, 0, 255, 0, numberOfMatrixes -1));
+  return int(map(input, 255, 0, 0, numberOfMatrixes -1));
 }
