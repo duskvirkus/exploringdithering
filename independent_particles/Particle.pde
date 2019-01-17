@@ -6,6 +6,8 @@ class Particle {
 
   color c; // color
   float mass;
+  
+  float maxSpeed = 0.0001;
 
   Particle(PVector location, color c) {
     this.location = new PVector(location.x, location.y);
@@ -19,6 +21,9 @@ class Particle {
   void update() {
     velocity.add(acceleration);
     location.add(velocity);
+    if (velocity.mag() > maxSpeed) {
+      velocity.normalize().mult(maxSpeed);
+    }
     acceleration.mult(0);
   }
 

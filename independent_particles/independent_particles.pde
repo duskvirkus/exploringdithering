@@ -1,13 +1,13 @@
 // Exploration of Dithering
 // Project 5
-// Title: Particles
+// Title: Independent Particles
 // Creator: Fi Graham
+
+// Could use some refactoring and performance improvements.
 
 // Enviroment Variables
 boolean export = true;
-String saveName = "export/particles-cctv";
-int saveCount = 0;
-String saveType = ".png";
+String savePath = "particles-cctv-1.png";
 PGraphics main; // main graphics for exporting at differt size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, devisor for export size
@@ -22,10 +22,11 @@ color secondaryColor;
 PImage original;
 PImage img;
 PImage changed;
-String imagePath = "CCTV.png";
+String imagePath = "cctv-1.png";
 
 // Particles
 ParticleSystem particleSystem;
+int particleSteps = 3;
 
 // Setup Function
 void setup() {  
@@ -33,18 +34,22 @@ void setup() {
   setupEnviroment();
   setupColors();
   setupImage();
-}
-
-void draw() {
-  particleSystem.update();
-  particleSystem.applyErrorForces(original, img);
-  showParticles();
+  for (int i = 0; i < particleSteps; i++) {
+    moveParticles();
+    showParticles();
+  }
   drawToMain();
   image(main, 0, 0, width, height);
   if (export) {
-    main.save(saveName + saveCount + saveType);
-    saveCount++;
+    main.save(savePath);
   }
+  noLoop();
+}
+
+void moveParticles() {
+  particleSystem.update();
+  particleSystem.applyErrorForces(original, img);
+  showParticles();
 }
 
 // sets up main graphics and size
@@ -69,11 +74,12 @@ void setupImage() {
   original.resize(size/downSampleFactor, size/downSampleFactor);
   original.filter(GRAY);
   img = original.get();
-  particleSystem = new ParticleSystem(img);
+  particleSystem = new ParticleSystem(img, 0.91); // 0.91 for cctv-1.png - 0.87 for cctv-2.png - 0.81 for cctv-3.png
 }
 
 // Handles image processing
 void showParticles() {
+  img = createImage(original.width, original.height, ARGB);
   particleSystem.display(img);
   changed = changeColor(
     img,
@@ -128,6 +134,6 @@ int index(int x, int y, int w) {
   return x + y * w;
 }
 
-color closestColor(float input) {
-  return color(round(input / 255) * 255);
+color closestColor(float input, float amplification) {
+  return color(round(input * amplification / 255) * 255);
 }
