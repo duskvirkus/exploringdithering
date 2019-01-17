@@ -1,5 +1,5 @@
 // Exploration of Dithering
-// Project 3
+// Project 4
 // Title: Patterning
 // Creator: Fi Graham
 
