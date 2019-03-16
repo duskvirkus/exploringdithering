@@ -1,14 +1,19 @@
-// Exploration of Dithering
+// #############################################################################
+// Exploring Dithering
 // Project 3
 // Title: Burkes
 // Creator: Fi Graham
+// #############################################################################
 
-// Enviroment Variables
+// #############################################################################
+// Global Variables
+
+// Environment Variables
 boolean export = false;
 String savePath = "burkes-bark-1.png";
-PGraphics main; // main graphics for exporting at differt size than working
+PGraphics main; // main graphics for exporting at different size than working
 int size = 1080; // final export size, includes boarder
-int scale = 2; // working scale, devisor for export size
+int scale = 2; // working scale, divisor for export size
 int border = 200;
 int downSampleFactor = 4; // must be 1 or 2^something
 
@@ -19,6 +24,9 @@ color secondaryColor;
 // Image
 PImage img;
 String imagePath = "bark-1.jpg";
+
+// #############################################################################
+// Setup
 
 // Setup Function
 void setup() {  
@@ -56,6 +64,9 @@ void setupImage() {
   img.resize(size/downSampleFactor, size/downSampleFactor);
   img.filter(GRAY);
 }
+
+// #############################################################################
+// Image Processing
 
 // Handles image processing
 void processImage() {
