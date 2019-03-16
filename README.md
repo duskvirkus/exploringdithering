@@ -1,5 +1,13 @@
 # Exploring Dithering
 
+![Image showing Floyd-Steinberg algorithm output.](./readme/floyd.png)
+![Image showing Perlin Noise algorithm output.](./readme/perlin.png)
+![Image showing Burkes algorithm output.](./readme/burkes.png)
+![Image showing Patterning algorithm output.](./readme/burkes.png)
+![Image showing Independent Particles algorithm output.](./readme/burkes.png)
+
+## Description
+
 This is a repository I worked on to explore image dithering algorithms in processing. I implemented a number of common dithering algorithms, as well as some of my own. I think I've only just scratched the surface, but it's unlikely I'll add to it any time soon. Please feel free to use my code. It's not that efficient and it would need some modification to be used in real time. If you create anything I'd love to see what you come up with. Below I outline each project in more detail.
 
 ## Resources
@@ -22,9 +30,3 @@ This is a repository I worked on to explore image dithering algorithms in proces
 *Resources I used to draw inspiration from.*
 - [Return of the Obra Dinn - Game](https://obradinn.com/)
 - [Robert Hodgin - Artist](http://roberthodgin.com/portfolio/stippling/)
-
-## Output
-
-#### Burkes
-
-![Image showing Burkes algorithm output. Depicting 3 dithered images of tree bark.](./readme/burkes.png)
