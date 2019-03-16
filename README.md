@@ -22,3 +22,9 @@ This is a repository I worked on to explore image dithering algorithms in proces
 *Resources I used to draw inspiration from.*
 - [Return of the Obra Dinn - Game](https://obradinn.com/)
 - [Robert Hodgin - Artist](http://roberthodgin.com/portfolio/stippling/)
+
+## Output
+
+#### Burkes
+
+![Image showing Burkes algorithm output. Depicting 3 dithered images of tree bark.](./readme/burkes.png)
