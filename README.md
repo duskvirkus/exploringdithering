@@ -3,8 +3,8 @@
 ![Image showing Floyd-Steinberg algorithm output.](./readme/floyd.png)
 ![Image showing Perlin Noise algorithm output.](./readme/perlin.png)
 ![Image showing Burkes algorithm output.](./readme/burkes.png)
-![Image showing Patterning algorithm output.](./readme/burkes.png)
-![Image showing Independent Particles algorithm output.](./readme/burkes.png)
+![Image showing Patterning algorithm output.](./readme/patterning.png)
+![Image showing Independent Particles algorithm output.](./readme/particles.png)
 
 ## Description
 
