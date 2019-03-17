@@ -15,6 +15,7 @@ This is a repository I worked on to explore image dithering algorithms in proces
 ![Image comparing the output from all algorithms.](./readme/all.png)
 
 *Top Row, Left to Right: Original, Floyd-Steinberg, Perlin Noise*
+
 *Bottom Row, Left to Right: Burkes, Patterning, Independent Particles*
 
 ## Resources
