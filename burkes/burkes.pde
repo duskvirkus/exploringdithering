@@ -10,7 +10,7 @@
 
 // Environment Variables
 boolean export = false;
-String savePath = "burkes-bark-1.png";
+String savePath = "burkes-fog-trees.png";
 PGraphics main; // main graphics for exporting at different size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, divisor for export size
@@ -23,7 +23,7 @@ color secondaryColor;
 
 // Image
 PImage img;
-String imagePath = "bark-1.jpg";
+String imagePath = "FogTrees.png";
 
 // #############################################################################
 // Setup

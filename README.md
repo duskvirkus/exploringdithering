@@ -8,7 +8,14 @@
 
 ## Description
 
-This is a repository I worked on to explore image dithering algorithms in processing. I implemented a number of common dithering algorithms, as well as some of my own. I think I've only just scratched the surface, but it's unlikely I'll add to it any time soon. Please feel free to use my code. It's not that efficient and it would need some modification to be used in real time. If you create anything I'd love to see what you come up with. Below I outline each project in more detail.
+This is a repository I worked on to explore image dithering algorithms in processing. I implemented a number of common dithering algorithms, as well as some of my own. I think I've only just scratched the surface, but it's unlikely I'll add to it any time soon. Please feel free to use my code. It's not that efficient and it would need some modification to be used in real time. If you create anything I'd love to see what you come up with.
+
+## Comparison
+
+![Image comparing the output from all algorithms.](./readme/all.png)
+
+*Top Row, Left to Right: Original, Floyd-Steinberg, Perlin Noise*
+*Bottom Row, Left to Right: Burkes, Patterning, Independent Particles*
 
 ## Resources
 #### Core

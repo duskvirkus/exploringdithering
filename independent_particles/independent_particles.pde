@@ -11,7 +11,7 @@
 
 // Environment Variables
 boolean export = false;
-String savePath = "particles-cctv-1.png";
+String savePath = "particles-fog-trees.png";
 PGraphics main; // main graphics for exporting at different size than working
 int size = 1080; // final export size, includes boarder
 int scale = 2; // working scale, divisor for export size
@@ -26,7 +26,7 @@ color secondaryColor;
 PImage original;
 PImage img;
 PImage changed;
-String imagePath = "cctv-1.png";
+String imagePath = "FogTrees.png";
 
 // Particles
 ParticleSystem particleSystem;
