@@ -1,16 +1,20 @@
-// Exploration of Dithering
+// #############################################################################
+// Exploring Dithering
 // Project 5
 // Title: Independent Particles
 // Creator: Fi Graham
-
+// #############################################################################
 // Could use some refactoring and performance improvements.
 
-// Enviroment Variables
-boolean export = true;
-String savePath = "particles-cctv-1.png";
-PGraphics main; // main graphics for exporting at differt size than working
+// #############################################################################
+// Global Variables
+
+// Environment Variables
+boolean export = false;
+String savePath = "particles-fog-trees.png";
+PGraphics main; // main graphics for exporting at different size than working
 int size = 1080; // final export size, includes boarder
-int scale = 2; // working scale, devisor for export size
+int scale = 2; // working scale, divisor for export size
 int border = 200;
 int downSampleFactor = 4; // must be 1 or 2^something
 
@@ -22,11 +26,14 @@ color secondaryColor;
 PImage original;
 PImage img;
 PImage changed;
-String imagePath = "cctv-1.png";
+String imagePath = "FogTrees.png";
 
 // Particles
 ParticleSystem particleSystem;
 int particleSteps = 3;
+
+// #############################################################################
+// Setup
 
 // Setup Function
 void setup() {  
@@ -44,12 +51,6 @@ void setup() {
     main.save(savePath);
   }
   noLoop();
-}
-
-void moveParticles() {
-  particleSystem.update();
-  particleSystem.applyErrorForces(original, img);
-  showParticles();
 }
 
 // sets up main graphics and size
@@ -75,6 +76,15 @@ void setupImage() {
   original.filter(GRAY);
   img = original.get();
   particleSystem = new ParticleSystem(img, 0.91); // 0.91 for cctv-1.png - 0.87 for cctv-2.png - 0.81 for cctv-3.png
+}
+
+// #############################################################################
+// Particles
+
+void moveParticles() {
+  particleSystem.update();
+  particleSystem.applyErrorForces(original, img);
+  showParticles();
 }
 
 // Handles image processing
